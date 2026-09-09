@@ -4,6 +4,7 @@ import br.com.fatec.cinemindai.agent.command.CommandRegistry;
 import br.com.fatec.cinemindai.agent.core.AgentExecutionContext;
 import java.util.List;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -39,6 +40,7 @@ public class PlanThenExecuteStrategy implements PlanningStrategy {
                 """.formatted(commandRegistry.describeAvailableCommands());
 
         LlmPlan llmPlan = chatClient.prompt()
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, context.conversationId()))
                 .system(systemPrompt)
                 .user(context.userMessage())
                 .call()

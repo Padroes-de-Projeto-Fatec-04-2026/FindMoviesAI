@@ -3,6 +3,7 @@ package br.com.fatec.cinemindai.agent.state;
 import br.com.fatec.cinemindai.agent.command.CommandExecutionRecord;
 import br.com.fatec.cinemindai.agent.core.AgentExecutionContext;
 import java.util.stream.Collectors;
+import org.springframework.ai.chat.memory.ChatMemory;
 
 public class RespondingState implements AgentState {
 
@@ -19,6 +20,7 @@ public class RespondingState implements AgentState {
                     .collect(Collectors.joining("\n"));
 
             String reply = context.services().chatClient().prompt()
+                    .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, context.conversationId()))
                     .system("""
                             Você é um assistente de recomendação de filmes, simpático e direto.
                             Use os resultados de comandos abaixo para responder ao usuário em português,

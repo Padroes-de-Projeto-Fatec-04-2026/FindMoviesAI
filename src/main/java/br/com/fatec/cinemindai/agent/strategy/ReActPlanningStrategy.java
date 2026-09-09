@@ -6,6 +6,7 @@ import br.com.fatec.cinemindai.agent.core.AgentExecutionContext;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -46,6 +47,7 @@ public class ReActPlanningStrategy implements PlanningStrategy {
         String observations = describeObservations(context.commandResults());
 
         LlmPlan llmPlan = chatClient.prompt()
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, context.conversationId()))
                 .system(systemPrompt)
                 .user("Pedido original: " + context.userMessage() + "\n\nObservações até agora:\n" + observations)
                 .call()
