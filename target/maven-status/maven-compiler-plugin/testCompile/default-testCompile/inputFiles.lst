@@ -1,0 +1,4 @@
+/home/bdd/Padr-es-de-Projetos/FindMoviesAI/src/test/java/br/com/fatec/cinemindai/CineMindAiApplicationTests.java
+/home/bdd/Padr-es-de-Projetos/FindMoviesAI/src/test/java/br/com/fatec/cinemindai/agent/command/CommandRegistryTest.java
+/home/bdd/Padr-es-de-Projetos/FindMoviesAI/src/test/java/br/com/fatec/cinemindai/agent/core/AgentExecutionContextStateTransitionTest.java
+/home/bdd/Padr-es-de-Projetos/FindMoviesAI/src/test/java/br/com/fatec/cinemindai/agent/strategy/PlannerSelectorTest.java
