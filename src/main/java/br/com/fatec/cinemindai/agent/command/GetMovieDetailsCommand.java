@@ -21,7 +21,7 @@ public class GetMovieDetailsCommand implements AgentCommand {
     @Override
     public String description() {
         return "Obtém detalhes completos de um filme (sinopse, diretor, elenco, nota). "
-                + "Argumentos: {\"titleOrId\": string}.";
+                + "Argumentos: {\"titleOrId\": string, título original em inglês ou IMDb ID como tt0816692}.";
     }
 
     @Override

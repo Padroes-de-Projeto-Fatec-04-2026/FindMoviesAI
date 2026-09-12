@@ -2,15 +2,17 @@ package br.com.fatec.cinemindai.movie;
 
 import java.util.List;
 import java.util.Locale;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
- * TODO(integração de dados/API): substituir este adapter por uma implementação real
- * (ex.: cliente TMDB/OMDb ou consulta a banco de dados). Esta classe existe apenas
- * como stub em memória para o agente funcionar de ponta a ponta durante o desenvolvimento
- * dos padrões State/Command/Strategy/Observer.
+ * Stub em memória, usado quando {@code movie.catalog=memory} (padrão). A integração real
+ * com a OMDb fica em {@link br.com.fatec.cinemindai.movie.omdb.OmdbMovieCatalogAdapter}
+ * ({@code movie.catalog=omdb}). Este stub continua existindo para testes e para rodar o agente
+ * sem chave de API.
  */
 @Component
+@ConditionalOnProperty(name = "movie.catalog", havingValue = "memory", matchIfMissing = true)
 public class InMemoryMovieCatalogAdapter implements MovieCatalogPort {
 
     private final List<MovieDetails> catalog = List.of(

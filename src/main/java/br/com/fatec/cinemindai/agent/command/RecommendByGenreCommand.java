@@ -21,7 +21,7 @@ public class RecommendByGenreCommand implements AgentCommand {
 
     @Override
     public String description() {
-        return "Recomenda filmes de um gênero específico. Argumentos: {\"genre\": string}.";
+        return "Recomenda filmes de um gênero específico. Argumentos: {\"genre\": string, ex.: terror, comédia, ficção científica}.";
     }
 
     @Override

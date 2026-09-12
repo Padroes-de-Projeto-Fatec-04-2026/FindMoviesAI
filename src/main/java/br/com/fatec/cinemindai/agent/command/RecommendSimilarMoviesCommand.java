@@ -21,7 +21,7 @@ public class RecommendSimilarMoviesCommand implements AgentCommand {
 
     @Override
     public String description() {
-        return "Recomenda filmes parecidos com um filme de referência. Argumentos: {\"title\": string}.";
+        return "Recomenda filmes parecidos com um filme de referência. Argumentos: {\"title\": string, título original em inglês}.";
     }
 
     @Override

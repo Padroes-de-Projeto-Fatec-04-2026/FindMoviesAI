@@ -21,7 +21,7 @@ public class SearchMoviesByTitleCommand implements AgentCommand {
 
     @Override
     public String description() {
-        return "Busca filmes pelo título. Argumentos: {\"title\": string}.";
+        return "Busca filmes pelo título. Argumentos: {\"title\": string, título original em inglês}.";
     }
 
     @Override

@@ -135,8 +135,10 @@ classDiagram
         +getDetails(id)
     }
     class InMemoryMovieCatalogAdapter
+    class OmdbMovieCatalogAdapter
 
-    MovieCatalogPort <|.. InMemoryMovieCatalogAdapter : stub (placeholder do colega)
+    MovieCatalogPort <|.. InMemoryMovieCatalogAdapter : stub (movie.catalog=memory)
+    MovieCatalogPort <|.. OmdbMovieCatalogAdapter : API OMDb (movie.catalog=omdb)
     SearchMoviesByTitleCommand --> MovieCatalogPort
     RecommendByGenreCommand --> MovieCatalogPort
     RecommendSimilarMoviesCommand --> MovieCatalogPort
@@ -225,14 +227,33 @@ classDiagram
 agrupa vários cartões (ou até outros painéis, ex.: seções "Recomendados" / "Parecidos com X")
 tratando-os de forma uniforme através da interface `UiComponent`.
 
-## Ponto de integração para dados/API (outro integrante)
+## Integração de dados: OMDb
 
-`movie/MovieCatalogPort.java` é o contrato que a consulta real de dados/API de filmes deve
-implementar (ex.: cliente TMDB/OMDb, ou uma consulta a banco de dados). Hoje o bean ativo é
-`InMemoryMovieCatalogAdapter`, um stub com ~10 filmes fixos, apenas para permitir rodar o
-agente de ponta a ponta. Basta o colega criar uma nova implementação de `MovieCatalogPort`
-anotada com `@Component` (e remover/desabilitar a stub) que os comandos (`agent.command.*`)
-passam a usar dados reais automaticamente — nenhuma outra classe precisa mudar.
+`movie/MovieCatalogPort.java` é o contrato que os comandos (`agent.command.*`) usam para
+consultar filmes. Existem duas implementações, escolhidas pela propriedade `movie.catalog`:
+
+| `movie.catalog` | Bean ativo | Uso |
+|---|---|---|
+| `memory` (padrão) | `InMemoryMovieCatalogAdapter` | stub com ~10 filmes fixos; testes e execução sem chave |
+| `omdb` | `movie/omdb/OmdbMovieCatalogAdapter` | API pública [OMDb](https://www.omdbapi.com/); exige `OMDB_API_KEY` |
+
+O pacote `movie/omdb` segue o padrão **Adapter**: `OmdbClient` encapsula os dois endpoints da
+OMDb (busca `?s=` e detalhes `?i=`/`?t=`) via `RestClient`, os records `Omdb*` espelham o JSON
+da API, e `OmdbMovieCatalogAdapter` traduz tudo para `MovieSummary`/`MovieDetails`.
+
+Duas limitações da OMDb moldaram o adapter:
+
+- **Só existe busca por título.** "Recomendar por gênero" e "filmes parecidos" são montados
+  pelo enum `OmdbGenre`: ele mapeia o gênero pedido (em português ou inglês, ex.: "terror",
+  "ficção científica") para o nome usado no campo `Genre` da OMDb e para alguns termos de
+  busca; os candidatos retornados são filtrados pelo `Genre` real. "Parecidos com X" usa o
+  gênero principal de X e exclui o próprio X.
+- **Cota de 1.000 requisições/dia no plano gratuito**, e cada resultado de busca exige uma
+  chamada extra de detalhes. `omdb.max-results` e `omdb.max-candidates` limitam o gasto por
+  comando.
+
+Como a base da OMDb é em inglês, as `description()` dos comandos pedem ao modelo títulos
+originais em inglês (ex.: "Interstellar", não "Interestelar").
 
 ## API REST exposta
 
